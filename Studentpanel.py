@@ -1,0 +1,156 @@
+from tkinter import*
+from tkinter import messagebox
+from tkinter import ttk
+import sqlite3
+class StudentPanel:
+    def __init__(self):
+        self.y=Tk()
+        self.img=PhotoImage(file=r'C:/Users/HP/Pictures/Screenshots/T4.png')
+        l=Label(text='',image=self.img)
+        l.place(x=0,y=0)
+        l=Label(text='Name',font='Arial 15')
+        l.pack()
+        self.e=Entry(font='Arial 10')
+        self.e.pack()
+        l1=Label(text='Email',font='Arial 16')
+        l1.pack()
+        self.e1=Entry(font='Arial 10')
+        self.e1.pack()
+        l2=Label(text='Password',font='Arial 15')
+        l2.pack()
+        self.e2=Entry(font='Arial 10')
+        self.e2.pack()
+        l3=Label(text='Branch',font='Arial 15')
+        l3.pack()
+        self.e3=Entry(font='Arial 10')
+        self.e3.pack()
+        l4=Label(text='Roll No',font='Arial 15')
+        l4.pack()
+        self.e4=Entry(font='Arial 10')
+        self.e4.pack()
+        l5=Label(text='Date', font='Arial 15')
+        l5.pack()
+        self.e5=Entry(font='Arial 10')
+        self.e5.pack()
+        b=Button(text='signup',command=self.signup,font='Arial 15')
+        b.pack()
+        b1=Button(text='Login',command=self.login,font='Arial 15')
+        b1.pack()
+        self.y.geometry("500x500")
+    def signup(self):
+        db=sqlite3.connect('attendance_system.db')
+        cr=db.cursor()
+        cr.execute(f'''select* from student where rollno={self.e4.get()}''')
+        check=cr.fetchall()
+        if(len(check)!=0):
+            messagebox.showinfo("error",'user already exist')
+        else:
+            cr.execute(f'''insert into student values('{self.e.get()}','{self.e1.get()}','{self.e2.get()}','{self.e3.get()}','{self.e4.get()}','{self.e5.get()}')''')
+            db.commit()
+            messagebox.showinfo("Success",'User create you can how login')
+            self.y.destroy()
+            self.login()
+
+
+
+        
+    def login(self):
+        if self.y:          ##
+            self.y.destroy()        ##
+        self.y1=Tk()
+        self.img=PhotoImage(file=r'C:/Users/HP/Pictures/Screenshots/T1.png')
+        l=Label(text='',image=self.img)
+        l.place(x=0,y=0)
+        l1=Label(text='Email',font='Arial 20')
+        l1.place(x=742,y=200)
+        self.e1=Entry(font='Arial 15')
+        self.e1.place(x=674,y=250)
+        l2=Label(text='Password',font='Arial 20')
+        l2.place(x=718,y=300)
+        self.e2=Entry(font='Arial 15')
+        self.e2.place(x=674,y=350)
+        b1=Button(text='Login',command=self.login1,font='Arial 18')
+        b1.place(x=740,y=400)
+        self.y1.geometry("500x500")
+    def data_update(self):
+        db=sqlite3.connect('attendance_system.db')
+        cr=db.cursor()
+        cr.execute(f"update student set email='{self.en.get()}',password='{self.en1.get()}' where email='{self.en.get()}'")
+        db.commit()
+        data=cr.fetchone()
+    def login1(self):
+        db=sqlite3.connect('attendance_system.db')
+        cr=db.cursor()
+        cr.execute(f'''select* from Student where email='{self.e1.get()}' and password='{self.e2.get()}' ''')
+##      data=cr.fetchall()
+        data=cr.fetchone()
+        if data:
+            self.y1.destroy()
+            self.y2=Tk()        
+            l=Label(text="Hi" +data[0])
+            l.pack()
+            notebook=ttk.Notebook()
+            frame1=Frame(self.y2,bg="red",padx=50,pady=70)
+            lb=Label(frame1,text="email",bg="orange",highlightthickness=0).pack()
+            self.en=Entry(frame1)
+            self.en.insert(0,data[1])
+            ##self.en.config(state="Disabled")
+            print(data)
+            self.en.pack()
+            lb1=Label(frame1,text="password",bg="pink",highlightthickness=0).pack()
+            self.en1=Entry(frame1)
+            self.en1.insert(0,data[2])
+            print(data)
+            self.en1.pack()
+            lb2=Label(frame1,text="Branch",bg="red",highlightthickness=0).pack()
+            self.en2=Entry(frame1)
+            self.en2.insert(0,data[3])
+            print(data)
+            self.en2.pack()
+            lb3=Label(frame1,text="Rollno",bg="blue",highlightthickness=0).pack()
+            self.en3=Entry(frame1)
+            self.en3.insert(0,data[4])
+            ##self.en3.config(state="Disabled")
+            print(data)
+            self.en3.pack()
+            lb4=Label(frame1,text="Date",bg="blue",highlightthickness=0).pack()
+            self.en4=Entry(frame1)
+            self.en4.insert(0,data[5])
+            print(data)
+            self.en4.pack()
+            btn=Button(frame1,text="Update",command=self.data_update)
+            btn.pack()
+            frame1.pack()
+
+            
+            frame2=Frame(self.y2,bg="skyblue",padx=100,pady=200)
+            tree=ttk.Treeview(frame2,column=("email","password","rollno","branch","Date","attendance"))
+##            tree=ttk.Treeview(frame2,column=("attendance"))
+            tree.heading("email",text="email")
+            tree.heading("password",text="password")
+            tree.heading("rollno",text="rollno")
+            tree.heading("branch",text="branch")
+            tree.heading("Date",text="Date")
+            tree.heading("attendance",text="attendance")
+            cr.execute(f"select* from Student where rollno='{data[4]}'")
+            student=cr.fetchall()
+            cr.execute(f"select* from Attendance where attendance='{data[2]}'")
+            Attendance=cr.fetchall()
+            tree.pack()
+            for i in range(0,len(student)):
+                tree.insert("","end",values=(student[i][1],student[i][2],student[i][3],student[i][4],student[i][5]))
+##                for j in range(1,len(Attendance)):
+##                    tree.insert("","end",values=(attendance[j][2]))
+            frame2.pack()
+            notebook.add(frame1,text="Profile")
+            notebook.add(frame2,text="Attendance")
+            notebook.pack(expand=True,fill="both")
+            
+        else:
+             messagebox.showinfo('Failure','Wrong Credentials')
+            
+        print("Login")
+
+
+
+        
