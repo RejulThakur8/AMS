@@ -1,33 +1,3 @@
- ##from tkinter import*
-##r=Tk()
-##def check():
-##    print(d.get())
-##d=IntVar()
-##c=Checkbutton(variable=d,onvalue=1,offvalue=0,text='hi')
-##c.pack()
-##
-##b=Button(text='check',command=check)
-##b.pack()
-
-###############
-##from tkinter import*
-##r=Tk()
-##def check():
-##    for i in range(5):
-##        if d[i].get()==1:
-##            print(e[i])
-##d=[]
-##c=[]
-##e=["Music","Dancing","Playing","traveling","Fighting"]
-##for i in range(5):
-##    d.append(IntVar())
-##    c.append(Checkbutton(variable=d[i],onvalue=1,offvalue=0,text=e[i]))
-##    c[i].pack()
-##
-##b=Button(text="check",command=check)
-##b.pack()
-
-###############################
 from tkinter import*
 import sqlite3
 from datetime import datetime
